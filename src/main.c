@@ -3,8 +3,11 @@
 #include "../include/net.h"
 #include "../include/http.h"
 #include "../include/url.h"
+#include "../include/html.h"
+#include "../include/renderer.h"
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <string.h>
 
 int main(int argc, char* argv[])
 {
@@ -34,15 +37,27 @@ int main(int argc, char* argv[])
     
   http_get(sock, url.host, url.path);
   
+  char response[100000];
+  int total = 0;
+  
   char buffer[4096];
   int bytes;
   
   while((bytes = recv(sock, buffer, sizeof(buffer)-1, 0)) > 0)
   {
-     buffer[bytes] = 0;
-     printf("%s", buffer);
+    memcpy(response + total, buffer, bytes);
+    total  += bytes;
   }
   
+  response[total] = '\0';
+  char* body = strstr(response,"\r\n\r\n");
+  if(body)
+    body += 4;
+  else
+     body = response;
+     
+  DOMNode* dom = parse_html(response);
+  render_dom(dom);
   close(sock);
   
   return 0;

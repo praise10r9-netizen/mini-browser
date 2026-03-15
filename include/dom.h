@@ -21,6 +21,6 @@ typedef struct DOMNode
 
 DOMNode* create_element(const char* tag);
 DOMNode* create_text(const char* text);
-void append_child(DOMNode *node,int depth);
-
+void append_child(DOMNode *parent, DOMNode *child);
+void print_dom(DOMNode* node, int depth);
 #endif

@@ -6,10 +6,16 @@
 DOMNode *create_element(const char* tag)
 {
   DOMNode* node = malloc(sizeof(DOMNode));
+  if(!node)
+  {
+    perror("malloc");
+    exit(EXIT_FAILURE);
+  }
   
   node->type = NODE_ELEMENT;
-  strncpy(node->tag, tag,sizeof(node->tag));
-  node->text[0] = 0;
+  
+  snprintf(node->tag, sizeof(node->tag), "%s", tag);
+  node->text[0] = '\0';
   
   node->parent = NULL;
   node->first_child = NULL;
@@ -21,9 +27,16 @@ DOMNode *create_element(const char* tag)
 DOMNode *create_text(const char* text)
 {
   DOMNode *node = malloc(sizeof(DOMNode));
+  if(!node)
+  {
+    perror("malloc");
+    exit(EXIT_FAILURE);
+  }
+  
   node->type = NODE_TEXT;
-  strncpy(node->next, text, sizeof(node->text));
-  node->tag[0] = 0;
+  
+  snprintf(node->text, sizeof(node->text), "%s", text);
+  node->tag[0] = '\0';
   
   node->parent = NULL;
   node->first_child = NULL;
@@ -63,7 +76,7 @@ void print_dom(DOMNode* node, int depth)
   
   while(child)
   {
-    print(child, depth+1);
+    print_dom(child, depth+1);
     child = child->next_sibling;
   }
 }
