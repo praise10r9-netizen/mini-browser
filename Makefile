@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-Wall -O2
 
-SRC=src/main.c src/net.c src/http.c
+SRC=src/main.c src/net.c src/http.c src/url.c
 
 browser:
 	$(CC) $(CFLAGS) $(SRC) -o browser
