@@ -17,6 +17,8 @@ DOMNode *create_element(const char* tag)
   snprintf(node->tag, sizeof(node->tag), "%s", tag);
   node->text[0] = '\0';
   
+  node->attributes = NULL;
+  
   node->parent = NULL;
   node->first_child = NULL;
   node->next_sibling = NULL;
@@ -37,7 +39,7 @@ DOMNode *create_text(const char* text)
   
   snprintf(node->text, sizeof(node->text), "%s", text);
   node->tag[0] = '\0';
-  
+  node->attributes = NULL;
   node->parent = NULL;
   node->first_child = NULL;
   node->next_sibling = NULL;
@@ -62,6 +64,33 @@ void append_child(DOMNode* parent, DOMNode* child)
  sibling->next_sibling = child;
 }
 
+void add_attribute(DOMNode* node, const char* name, const char* value)
+{
+  DOMAttr* attr = malloc(sizeof(DOMAttr));
+  if(!attr)
+  {
+    perror("malloc");
+    exit(EXIT_FAILURE);
+  }
+  snprintf(attr->name,sizeof(attr->name),"%s",name);
+  snprintf(attr->value,sizeof(attr->value),"%s",value);
+  
+  attr->next = node->attributes;
+  node->attributes = attr;
+}
+
+const char* get_attribute(DOMNode* node,const char* name)
+{
+  DOMAttr* attr = node->attributes;
+  while(attr)
+  {
+    if(strcmp(attr->name,name)==0)
+       return attr->value;
+       
+    attr = attr->next;
+  }
+  return NULL;
+}
 void print_dom(DOMNode* node, int depth)
 {
   for(int i = 0; i<depth; i++)

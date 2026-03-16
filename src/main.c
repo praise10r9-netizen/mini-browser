@@ -5,6 +5,7 @@
 #include "../include/url.h"
 #include "../include/html.h"
 #include "../include/renderer.h"
+#include "../include/extractor.h"
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <string.h>
@@ -50,14 +51,20 @@ int main(int argc, char* argv[])
   }
   
   response[total] = '\0';
-  char* body = strstr(response,"\r\n\r\n");
+ char* body = strstr(response,"\r\n\r\n");
   if(body)
     body += 4;
   else
      body = response;
      
-  DOMNode* dom = parse_html(response);
+  DOMNode* dom = parse_html(body); 
+  printf("\n--- Extracted Links ---\n");
+  
+  extract_links(dom); 
+
   render_dom(dom);
+ 
+ 
   close(sock);
   
   return 0;
